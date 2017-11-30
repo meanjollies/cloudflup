@@ -1,0 +1,16 @@
+---
+
+# Cloudflare email associated with the account
+email: ''
+# API key
+key: ''
+# Zone to be updated
+zone: ''
+# Record to be updated (including zone)
+record: ''
+# URLs for getting the current IPv4 and IPv6 addresses
+ip4_uri: 'http://whatismyip.akamai.com'
+ip6_uri: 'http://ipv6.whatismyip.akamai.com'
+# Cloudflare API URL
+cf_uri: 'https://api.cloudflare.com/client/v4/zones'
+
