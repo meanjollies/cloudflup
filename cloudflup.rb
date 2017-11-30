@@ -8,24 +8,24 @@
 require 'resolv'
 require 'net/https'
 require 'json'
-
-email = ''
-key = ''
-zone = ''
-record = ''
-ip4_uri = 'http://whatismyip.akamai.com'
-ip6_uri = 'http://ipv6.whatismyip.akamai.com'
-cf_uri = 'https://api.cloudflare.com/client/v4/zones'
+require 'yaml'
 
 class Cloudflare
-  def initialize(cf_uri, email, key, zone, record, ip4_uri, ip6_uri)
-    @email = email
-    @key = key
-    @zone = zone
-    @cf_uri = cf_uri
-    @record = record
-    @ip4_uri = ip4_uri
-    @ip6_uri = ip6_uri
+  def initialize
+    opts = YAML.load_file('options.yaml')
+
+    @email = opts['email']
+    @key = opts['key']
+    @zone = opts['zone']
+    @cf_uri = opts['cf_uri']
+    @record = opts['record']
+    @ip4_uri = opts['ip4_uri']
+    @ip6_uri = opts['ip6_uri']
+
+    # make sure required params are set
+    opts.each do |k, v|
+      raise "The #{k} parameter is not set" if v.length == 0
+    end
   end
 
   def get_ip(type)
@@ -78,6 +78,6 @@ class Cloudflare
   end
 end
 
-cloudflare = Cloudflare.new(cf_uri, email, key, zone, record, ip4_uri, ip6_uri)
+cloudflare = Cloudflare.new
 cloudflare.update('A')
 cloudflare.update('AAAA')
