@@ -7,11 +7,7 @@ Cloudflup is another Cloudflare dynamic DNS update client for A and AAAA records
 
 ### Configuration
 
-Prior to running, make sure options.yml is filled out. All parameters are required. You can get your API key from within your Cloudflare account.
-
-### Todo
-* Proper error handling
-* Moar documentation (including stdout)
+Prior to running, make sure options.yaml is filled out. All parameters are required. You can get your API key from within your Cloudflare account.
 
 License
 ---
