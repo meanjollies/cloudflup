@@ -33,14 +33,17 @@ class Cloudflare
   def get_ip(type)
     case type.downcase
     when 'a'
+      print "Getting current public IPv4 address..."
       ip = Net::HTTP.get(URI.parse(@ip4_uri)).strip
       raise RuntimeError, "Not a valid IPv4 address: #{ip}" unless ip =~ Resolv::IPv4::Regex
     when 'aaaa'
+      print "Getting current public IPv6 address..."
       ip = Net::HTTP.get(URI.parse(@ip6_uri)).strip
       raise RuntimeError, "Not a valid IPv6 address: #{ip}" unless ip =~ Resolv::IPv6::Regex
     else
       raise RuntimeError, "Invalid record type: #{type}"
     end
+    puts "#{ip}...OK!"
     return ip
   end
 
@@ -81,7 +84,9 @@ class Cloudflare
     params = {"type":type.upcase,"name":@record,"content":get_ip(type)}
     request = "Net::HTTP::Put.new(uri.path, headers)"
     response = "json['success']"
+    print "Updating #{type} record..."
     make_request(params, uri, request, response)
+    puts "OK!"
   end
 end
 
