@@ -14,6 +14,7 @@ class Cloudflare
   def initialize
     opts = YAML.load_file('options.yaml')
 
+    # load in params from config
     @email = opts['email']
     @key = opts['key']
     @zone = opts['zone']
@@ -28,6 +29,7 @@ class Cloudflare
     end
   end
 
+  # get current public ipv4/6 address
   def get_ip(type)
     case type.downcase
     when 'a'
@@ -42,6 +44,7 @@ class Cloudflare
     return ip
   end
 
+  # perform REST calls against cloudflare api, including any params
   def make_request(params, uri, request, response)
     headers = {"X-Auth-Email" => @email, "X-Auth-Key" => @key, "Content-Type" => "application/json"}
     http = Net::HTTP.new(uri.host, uri.port)
@@ -49,10 +52,12 @@ class Cloudflare
     req = eval(request)
     req.body = params.to_json
     resp = http.request(req)
+    raise RuntimeError, resp.value if resp.code != '200'
     json = JSON.parse(resp.body)
     return eval(response)
   end
 
+  # retrieve the zone id
   def get_zone_id
     uri = URI.parse(@cf_uri)
     params = "name=#{@zone}"
@@ -61,6 +66,7 @@ class Cloudflare
     make_request(params, uri, request, response)
   end
 
+  # retrieve the record id
   def get_record_id(type)
     uri = URI.parse(@cf_uri+"/#{get_zone_id}/dns_records")
     params = "type=#{type.upcase}&name=#{@record}"
@@ -69,6 +75,7 @@ class Cloudflare
     make_request(params, uri, request, response) 
   end
 
+  # perform the actual update against the specific record type
   def update(type)
     uri = URI.parse(@cf_uri+"/#{get_zone_id}/dns_records/#{get_record_id(type)}")
     params = {"type":type.upcase,"name":@record,"content":get_ip(type)}
