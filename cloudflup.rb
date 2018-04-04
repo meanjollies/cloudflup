@@ -12,7 +12,8 @@ require 'yaml'
 
 class Cloudflare
   def initialize
-    opts = YAML.load_file('options.yaml')
+    cnf = File.dirname(File.expand_path(__FILE__)) + '/options.yaml'
+    opts = YAML.load_file(cnf)
 
     # load in params from config
     @email = opts['email']
